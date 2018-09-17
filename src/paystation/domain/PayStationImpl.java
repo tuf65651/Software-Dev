@@ -1,5 +1,7 @@
 package paystation.domain;
 
+import java.util.HashMap;
+
 /**
  * Implementation of the pay station.
  *
@@ -23,6 +25,7 @@ public class PayStationImpl implements PayStation {
     
     private int insertedSoFar;
     private int timeBought;
+    
 
     @Override
     public void addPayment(int coinValue)
@@ -51,11 +54,44 @@ public class PayStationImpl implements PayStation {
     }
 
     @Override
-    public void cancel() {
+    public HashMap<Integer, Integer> cancel() {
+        Integer Zero = new Integer(0);
+        Integer Five = new Integer(5);
+        Integer Ten = new Integer(10);
+        Integer Twentyfive = new Integer(25);
+        
+        HashMap<Integer, Integer> coinsInChange;
+        coinsInChange = new HashMap<Integer, Integer>();
+        
+        // Calculate number of quarters returned
+        Integer nQuarters = new Integer(insertedSoFar/25);
+        insertedSoFar = insertedSoFar % 25;
+        
+        // Calculate number of dimes returned
+        Integer nDimes = new Integer(insertedSoFar/10);
+        insertedSoFar = insertedSoFar % 10;
+        
+        // Calculate number of nickels returned
+        Integer nNickels = new Integer(insertedSoFar/5);// Assume DNE 0 < insertedSoFar < 5
+        
+        // Return correct number of each coin in Map
+        coinsInChange.put(Five, nNickels);
+        coinsInChange.put(Ten, nDimes);
+        coinsInChange.put(Twentyfive, nQuarters);
+        
         reset();
+        
+        return coinsInChange;
     }
     
     private void reset() {
         timeBought = insertedSoFar = 0;
+    }
+
+    @Override
+    public int empty() {
+        int collected = insertedSoFar;
+        reset();
+        return collected;
     }
 }

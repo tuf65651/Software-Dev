@@ -11,11 +11,19 @@
  */
 package paystation.domain;
 
+import java.util.Map;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.Before;
 
 public class PayStationImplTest {
+   
+    Integer Zero = new Integer(0);
+    Integer Five = new Integer(5);
+    Integer Ten = new Integer(10);
+    Integer Twentyfive = new Integer(25);
+    Integer numQuarters, numDimes, numNickels;
+    int nQuarters, nDimes, nNickels;
 
     PayStation ps;
 
@@ -137,5 +145,136 @@ public class PayStationImplTest {
         ps.addPayment(25);
         assertEquals("Insert after cancel should work",
                 10, ps.readDisplay());
+    }
+    
+    /**
+     * Verify empty() method exists
+     */
+    @Test
+    public void emptyMethodExists() {
+        ps.empty();
+    }
+    
+    /**
+     * Empty returns input value
+     */
+    @Test
+    public void emptyMeterShouldReturnZero() {
+        ps.empty();
+        int collected = ps.empty();
+        assertEquals(collected, 0);
+    }
+    
+    /**
+     * Verify that a meter with money inside returns content.
+     * Verify that meter is empty after emptied.
+     */
+    @Test
+    public void fullMeterShouldReturnInputValueGoToZero() throws IllegalCoinException {
+        ps.empty();
+        ps.addPayment(5);
+        int collected = ps.empty();
+        assertEquals(collected, 5);
+        int leftInMeter = ps.empty();
+        assertEquals(leftInMeter, 0);
+    }
+
+    /**
+     * Verify that return from Cancel is Map
+     */
+    @Test
+    public void shouldReturnMapFromCancel() {
+        Object gotFromCancel = ps.cancel();
+        assertNotNull(gotFromCancel);
+        assertTrue(gotFromCancel instanceof Map);
+    }
+    
+    /**
+     * Verify Map of no coins is returned from empty machine
+     */
+    @Test
+    public void shouldReturnZeroesMapFromEmptyMachine() {
+        ps.empty();
+        Map coins = ps.cancel();
+        assertEquals(Zero, coins.get(Five));
+        assertEquals(Zero, coins.get(Ten));
+        assertEquals(Zero, coins.get(Twentyfive));
+    }
+    
+    /**
+     * Verify that correct change is returned for one nickel
+     */
+    @Test
+    public void shouldReturnCorrectChangeIn5Case() throws IllegalCoinException {
+        ps.empty();
+        ps.addPayment(5);
+        Map<Integer, Integer> change = ps.cancel();
+        Integer numNickels = change.get(Five);
+        int nNickels = numNickels.intValue();
+        
+        assertEquals("One Nickel should be represented in the map returned", 1, nNickels);
+    }
+    
+    /**
+     * Verify that correct change is returned for one quarter and then for 30 cents
+     */
+    @Test
+    public void shouldReturnCorrectChangeIn25Case30Case() throws IllegalCoinException {
+        ps.empty();
+        ps.addPayment(25);
+        Map<Integer, Integer> change = ps.cancel();
+        numQuarters = change.get(Twentyfive);
+        nQuarters = numQuarters.intValue();
+        
+        assertEquals("One Nickel should be represented in the map returned", 1, nQuarters);
+        
+    }
+    
+    /**
+     * Verify correct change for 30 cents
+     */
+    @Test
+    public void shouldReturnCorrectChangeIn30Case() throws IllegalCoinException {
+        
+        ps.addPayment(25);
+        ps.addPayment(5);
+        Map<Integer, Integer> change = ps.cancel();
+
+        numQuarters = change.get(Twentyfive);
+        numDimes = change.get(Ten);
+        numNickels = change.get(Five);
+        
+        nQuarters = numQuarters.intValue();
+        nDimes = numDimes.intValue();
+        nNickels = numNickels.intValue();
+        
+        assertEquals("Thirty cents should have one nickel", nNickels, 1);
+        assertEquals("Thirty cents should have one quarter", nDimes, 0);
+        assertEquals("Thirty cents should have one quarter", nQuarters, 1);
+        
+    }
+    
+    /**
+     * Verify correct change for 35 cents
+     */
+    @Test
+    public void shouldReturnCorrectChangeIn35Case() throws IllegalCoinException {
+        // 
+        ps.addPayment(25);
+        ps.addPayment(5);
+        ps.addPayment(5);
+        Map<Integer, Integer>change = ps.cancel();
+        
+        numQuarters = change.get(Twentyfive);
+        numDimes = change.get(Ten);
+        numNickels = change.get(Five);
+        
+        nQuarters = numQuarters.intValue();
+        nDimes = numDimes.intValue();
+        nNickels = numNickels.intValue();
+        
+        assertEquals("Thirty cents should have no nickel", nNickels, 0);
+        assertEquals("Thirty cents should have one dime", nDimes, 1);
+        assertEquals("Thirty cents should have one quarter", nQuarters, 1);
     }
 }
