@@ -219,7 +219,7 @@ public class PayStationImplTest {
      * Verify that correct change is returned for one quarter and then for 30 cents
      */
     @Test
-    public void shouldReturnCorrectChangeIn25Case30Case() throws IllegalCoinException {
+    public void shouldReturnCorrectChangeIn25Case() throws IllegalCoinException {
         ps.empty();
         ps.addPayment(25);
         Map<Integer, Integer> change = ps.cancel();
@@ -273,8 +273,8 @@ public class PayStationImplTest {
         nDimes = numDimes.intValue();
         nNickels = numNickels.intValue();
         
-        assertEquals("Thirty cents should have no nickel", nNickels, 0);
-        assertEquals("Thirty cents should have one dime", nDimes, 1);
+        assertEquals("Thirty cents should have no nickel", nNickels, 2);
+        assertEquals("Thirty cents should have one dime", nDimes, 0);
         assertEquals("Thirty cents should have one quarter", nQuarters, 1);
     }
 }
