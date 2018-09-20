@@ -2,3 +2,6 @@
 /nbproject/private/
 *.xml
 *.properties
+*.mf
+*.iml
+/.idea/
