@@ -26,6 +26,7 @@ public class PayStationImpl implements PayStation {
     private int nNickels = 0;
     private int nDimes = 0;
     private int nQuarters = 0;
+    private int stored=0;
 
     @Override
     public void addPayment(int coinValue)
@@ -54,6 +55,7 @@ public class PayStationImpl implements PayStation {
 
     @Override
     public Receipt buy() {
+        stored += insertedSoFar;
         Receipt r = new ReceiptImpl(timeBought);
         reset();
         return r;
@@ -90,8 +92,11 @@ public class PayStationImpl implements PayStation {
         // Calculate number of nickels returned
         //Integer nNickels = new Integer(insertedSoFar/5);// Assume DNE 0 < insertedSoFar < 5
         // Return correct number of each coin in Map
+        if(nNickels!=0)
         coinsInChange.put(Five, nNickels);
+        if(nDimes!=0)
         coinsInChange.put(Ten, nDimes);
+        if(nQuarters!=0)
         coinsInChange.put(Twentyfive, nQuarters);
 
         reset();
@@ -105,8 +110,8 @@ public class PayStationImpl implements PayStation {
 
     @Override
     public int empty() {
-        int collected = insertedSoFar;
-        reset();
+        int collected = stored;
+        stored = 0;
         return collected;
     }
 }
