@@ -156,7 +156,7 @@ public class PayStationImplTest {
     }
     
     /**
-     * Empty returns input value
+     * Empty returns total amount of money collected
      */
     @Test
     public void emptyMeterShouldReturnZero() {
@@ -175,6 +175,7 @@ public class PayStationImplTest {
     public void fullMeterShouldReturnInputValueGoToZero() throws IllegalCoinException {
         ps.empty();
         ps.addPayment(5);
+        ps.buy();
         int collected = ps.empty();
         assertEquals(collected, 5);
         int leftInMeter = ps.empty();
@@ -282,7 +283,7 @@ public class PayStationImplTest {
         numNickels = change.get(Five);
         
         nQuarters = numQuarters.intValue();
-        nDimes = numDimes.intValue();
+//        nDimes = numDimes.intValue();
         nNickels = numNickels.intValue();
         
         assertEquals("Thirty cents should have one nickel", nNickels, 1);
