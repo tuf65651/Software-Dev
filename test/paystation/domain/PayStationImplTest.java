@@ -224,15 +224,15 @@ public class PayStationImplTest {
     }
     
     /**
-     * Verify Map of no coins is returned from empty machine
+     * Verify Map of no coins is contains no keys, and is not null
      */
 //    @Test inconsistent with requirements, test SHOULD fail
+    @Test
     public void shouldReturnZeroesMapFromEmptyMachine() {
         ps.empty();
         Map coins = ps.cancel();
-        assertEquals(Zero, coins.get(Five));
-        assertEquals(Zero, coins.get(Ten));
-        assertEquals(Zero, coins.get(Twentyfive));
+        assertFalse("is Null",coins==null);
+        assertTrue("is Empty",coins.isEmpty());
     }
     
     /**
@@ -255,6 +255,7 @@ public class PayStationImplTest {
      * Verify that correct change is returned for one quarter.
      */
 //    @Test don't bother testing, just another one ocin case
+    @Test
     public void shouldReturnCorrectChangeIn25Case() throws IllegalCoinException {
         ps.empty();
         ps.addPayment(25);
@@ -298,6 +299,7 @@ public class PayStationImplTest {
      *
      * Assigned Test Case: Map does not contain key for coin entered.
      */
+    @Test
     public void shouldReturnMapWithoutKeyForAbsentCoins() throws IllegalCoinException {
         for(int i = 0; i < 5; i++) {
             ps.addPayment(5);
@@ -311,6 +313,7 @@ public class PayStationImplTest {
      * Verify correct change for 35 cents
      */
 //    @Test don't bother running -- other tests covered all assigned cases.
+    @Test
     public void shouldReturnCorrectChangeIn35Case() throws IllegalCoinException {
         // 
         ps.addPayment(25);
@@ -319,15 +322,12 @@ public class PayStationImplTest {
         Map<Integer, Integer>change = ps.cancel();
         
         numQuarters = change.get(Twentyfive);
-        numDimes = change.get(Ten);
         numNickels = change.get(Five);
         
         nQuarters = numQuarters.intValue();
-        nDimes = numDimes.intValue();
         nNickels = numNickels.intValue();
         
         assertEquals("Thirty cents should have no nickel", nNickels, 2);
-        assertEquals("Thirty cents should have one dime", nDimes, 0);
         assertEquals("Thirty cents should have one quarter", nQuarters, 1);
     }
 
